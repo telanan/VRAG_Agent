@@ -43,7 +43,12 @@ cd "${PROJECT_ROOT}"
 if [ -d "VRAG" ]; then
     warn "VRAG 目录已存在，跳过克隆"
 else
-    git clone https://github.com/alibaba-nlp/VRAG.git
+    # 使用浅克隆加速，避免网络超时
+    info "  使用浅克隆（--depth 1）加速下载..."
+    git config --global http.postBuffer 524288000
+    git clone --depth 1 https://github.com/alibaba-nlp/VRAG.git || {
+        error "VRAG 克隆失败，请检查网络或手动克隆：git clone --depth 1 https://github.com/alibaba-nlp/VRAG.git"
+    }
 fi
 cd VRAG
 
