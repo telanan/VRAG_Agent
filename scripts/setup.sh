@@ -112,9 +112,16 @@ mkdir -p logs
 info "Step 6/6: 写入配置文件..."
 cat > .env << EOF
 # VRAG 环境配置
-# 修改 DASHSCOPE_API_KEY 后执行 source .env 生效
+# 修改 API Key 后执行 source .env 生效
 
+# DashScope API（阿里云）
 DASHSCOPE_API_KEY=${DASHSCOPE_API_KEY}
+
+# DeepSeek API（推荐，更便宜）
+OPENAI_API_KEY=sk-xM7UIwC14WY7r7OQUnEOAJ0V4gza9MDEpvvfBLaKrLMKnHAr
+OPENAI_BASE_URL=https://xh.v1api.cc/v1
+OPENAI_MODEL=deepseek-chat
+
 HF_ENDPOINT=${HF_MIRROR}
 
 # 模型路径（相对于 VRAG 目录）

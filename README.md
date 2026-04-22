@@ -62,9 +62,9 @@ source VRAG/.env
 bash scripts/train_grpo_h20.sh
 ```
 
-**方案 B：使用 DeepSeek（推荐，更便宜）**
+**方案 B：使用 DeepSeek（推荐，已预配置）**
 ```bash
-export DEEPSEEK_API_KEY=your_key  # https://platform.deepseek.com
+source VRAG/.env  # 已包含 DeepSeek API 配置
 bash scripts/train_grpo_h20_deepseek.sh
 ```
 

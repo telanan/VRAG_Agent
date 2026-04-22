@@ -13,10 +13,9 @@ VRAG_DIR="${PROJECT_ROOT}/VRAG"
 cd "${VRAG_DIR}/VRAG-RL"
 
 # ── API Key 检查 ──────────────────────────────────────
-if [ -z "${DEEPSEEK_API_KEY}" ]; then
-    echo "[ERROR] 未设置 DEEPSEEK_API_KEY"
-    echo "        请执行: export DEEPSEEK_API_KEY=your_key"
-    echo "        申请地址: https://platform.deepseek.com"
+if [ -z "${OPENAI_API_KEY}" ]; then
+    echo "[ERROR] 未设置 OPENAI_API_KEY"
+    echo "        请执行: source VRAG/.env"
     exit 1
 fi
 
@@ -64,9 +63,9 @@ max_response_length=2048
 # ── Reward 模型（DeepSeek API）────────────────────────
 rm_manager_type="rm"
 rm_workers_num=10
-rm_model_name="deepseek-chat"  # DeepSeek V3
-rm_url="https://api.deepseek.com/v1"
-rm_api_key="${DEEPSEEK_API_KEY}"
+rm_model_name="${OPENAI_MODEL}"  # deepseek-chat
+rm_url="${OPENAI_BASE_URL}"      # https://xh.v1api.cc/v1
+rm_api_key="${OPENAI_API_KEY}"
 
 # ── 训练控制 ──────────────────────────────────────────
 total_epochs=1
