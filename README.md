@@ -54,7 +54,20 @@ cd VRAG
 
 打开 http://localhost:8501 测试检索问答。
 
-### 5. 启动 RL 训练
+### 5. SFT 冷启动（可选，推荐）
+
+在 RL 训练前，先用 SFT 教会模型基本格式：
+
+```bash
+# 准备 SFT 数据
+python scripts/prepare_sft_data.py
+
+# SFT 训练（约 2-3 小时）
+source VRAG/.env
+bash scripts/train_sft_h20.sh
+```
+
+### 6. 启动 RL 训练
 
 **方案 A：使用 DashScope（阿里云）**
 ```bash
@@ -69,6 +82,26 @@ bash scripts/train_grpo_h20_deepseek.sh
 ```
 
 训练约需 20-30 小时（单卡 H20 96GB）。
+
+### 7. 部署 Demo（训练完成后）
+
+**方案 A：使用 tmux 一键启动**
+```bash
+bash scripts/deploy_demo_tmux.sh
+# 访问 http://localhost:8501
+```
+
+**方案 B：手动启动（3 个终端）**
+```bash
+# 终端 1：检索引擎
+cd VRAG && python search_engine/search_engine_api.py
+
+# 终端 2：vLLM 推理
+vllm serve VRAG/models/Qwen2.5-VL-7B-VRAG --port 8002
+
+# 终端 3：Streamlit UI
+streamlit run VRAG/demo/app.py --server.port 8501
+```
 
 ## API 费用对比
 
@@ -89,9 +122,13 @@ VRAG_Agent/
 ├── scripts/
 │   ├── setup.sh               # 一键搭建脚本
 │   ├── prepare_data.py        # 数据处理（SlideVQA + 金融 PDF）
-│   ├── train_grpo_h20.sh      # 训练配置（DashScope）
-│   ├── train_grpo_h20_deepseek.sh  # 训练配置（DeepSeek）
-│   └── annotate_finance_qa.py # 金融年报 QA 自动标注
+│   ├── prepare_sft_data.py    # SFT 数据准备
+│   ├── train_sft_h20.sh       # SFT 冷启动训练
+│   ├── train_grpo_h20.sh      # RL 训练配置（DashScope）
+│   ├── train_grpo_h20_deepseek.sh  # RL 训练配置（DeepSeek）
+│   ├── annotate_finance_qa.py # 金融年报 QA 自动标注
+│   ├── deploy_demo.sh         # Demo 部署指南
+│   └── deploy_demo_tmux.sh    # Demo 一键部署（tmux）
 ├── data/
 │   └── finance_pdfs/          # 放置年报 PDF（自行准备）
 │       └── README.md
