@@ -59,18 +59,27 @@ cd VRAG
 # ── Step 3: 安装依赖 ──────────────────────────────────
 info "Step 3/6: 安装 Demo 依赖..."
 
+# 配置 pip 超时和重试
+export PIP_DEFAULT_TIMEOUT=300
+export PIP_RETRIES=5
+
 # 修复 requirements.txt 中的 faiss 版本（Python 3.10 只支持 1.7.x）
 info "  修复 faiss-gpu 版本兼容性..."
 sed -i.bak 's/faiss-gpu>=1.8.0/faiss-gpu>=1.7.0/' requirements.txt
 sed -i.bak 's/faiss-gpu>=1.8.0/faiss-gpu>=1.7.0/' VRAG-RL/requirements_demo.txt 2>/dev/null || true
 
-pip install -r requirements.txt -q
-pip install -r VRAG-RL/requirements_demo.txt -q
+info "  安装基础依赖（可能需要几分钟）..."
+pip install -r requirements.txt --timeout 300 --retries 5 -q || {
+    warn "部分依赖安装失败，继续..."
+}
+pip install -r VRAG-RL/requirements_demo.txt --timeout 300 --retries 5 -q || {
+    warn "部分依赖安装失败，继续..."
+}
 
 info "安装 FAISS GPU 版本（CUDA 12.x，Python 3.10 兼容）..."
-pip install faiss-gpu==1.7.2 -q 2>/dev/null || {
+pip install faiss-gpu==1.7.2 --timeout 300 -q 2>/dev/null || {
     warn "faiss-gpu 安装失败，改用 faiss-cpu"
-    pip install faiss-cpu==1.7.2 -q
+    pip install faiss-cpu==1.7.2 --timeout 300 -q
 }
 
 info "安装 flash-attn（训练需要，可能较慢）..."
