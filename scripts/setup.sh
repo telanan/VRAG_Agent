@@ -31,7 +31,11 @@ fi
 
 # ── Step 1: Conda 环境 ────────────────────────────────
 info "Step 1/6: 创建 Conda 环境 (python=${PYTHON_VERSION})..."
-conda create -n "${CONDA_ENV}" python="${PYTHON_VERSION}" -y
+if conda env list | grep -q "^${CONDA_ENV} "; then
+    warn "Conda 环境 ${CONDA_ENV} 已存在，跳过创建"
+else
+    conda create -n "${CONDA_ENV}" python="${PYTHON_VERSION}" -y
+fi
 # shellcheck disable=SC1091
 source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate "${CONDA_ENV}"
